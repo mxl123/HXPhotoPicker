@@ -1117,6 +1117,7 @@ HX_PhotoEditViewControllerDelegate
         self.albumModel.realCount = self.photoCount + self.videoCount;
     }
     [self collectionViewAddModel:model beforeModel:nil];
+    [self configSelect:model];
 }
 - (void)collectionViewAddModel:(HXPhotoModel *)model beforeModel:(HXPhotoModel *)beforeModel {
     
@@ -1647,7 +1648,7 @@ HX_PhotoEditViewControllerDelegate
     }
     [self.manager addICloudModel:model];
 }
-- (void)photoPreviewControllerDidSelect:(HXPhotoPreviewViewController *)previewController model:(HXPhotoModel *)model {
+- (void)configSelect:(HXPhotoModel *)model {
     NSMutableArray *indexPathList = [NSMutableArray array];
     if (model.currentAlbumIndex == self.albumModel.index) {
         [indexPathList addObject:[NSIndexPath indexPathForItem:[self dateItem:model] inSection:0]];
@@ -1675,6 +1676,10 @@ HX_PhotoEditViewControllerDelegate
     if ([self.delegate respondsToSelector:@selector(photoViewControllerDidChangeSelect:selected:)]) {
         [self.delegate photoViewControllerDidChangeSelect:model selected:model.selected];
     }
+}
+
+- (void)photoPreviewControllerDidSelect:(HXPhotoPreviewViewController *)previewController model:(HXPhotoModel *)model {
+    [self configSelect:model];
 }
 - (void)photoPreviewControllerDidDone:(HXPhotoPreviewViewController *)previewController {
     [self photoBottomViewDidDoneBtn];

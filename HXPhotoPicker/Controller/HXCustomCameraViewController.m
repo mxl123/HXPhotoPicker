@@ -279,7 +279,7 @@ CLLocationManagerDelegate
                     }else {
                         [[UIApplication sharedApplication] openURL:url];
                     }
-                }); 
+                });
             }
         });
     }];
@@ -343,7 +343,7 @@ CLLocationManagerDelegate
     [super viewDidDisappear:animated];
     [self stopTimer];
     [self.cameraController stopSession];
-} 
+}
 - (void)dealloc {
     if (HX_ALLOW_LOCATION && _locationManager) {
         [self.locationManager stopUpdatingLocation];
@@ -411,7 +411,17 @@ CLLocationManagerDelegate
                     [self doneCompleteWithModel:cameraModel];
                 }
             }else if (cameraModel.subType == HXPhotoModelMediaSubTypeVideo) {
-                [self doneCompleteWithModel:cameraModel];
+                [self.view hx_immediatelyShowLoadingHudWithText:nil];
+                [HXPhotoTools saveVideoToCustomAlbumWithName:self.manager.configuration.customAlbumName videoURL:self.videoURL location:self.location complete:^(HXPhotoModel *model, BOOL success) {
+                    [weakSelf.view hx_handleLoading:NO];
+                    if (success) {
+                        model.videoURL = weakSelf.videoURL;
+                        [weakSelf doneCompleteWithModel:model];
+                    }else {
+                        [weakSelf.view hx_showImageHUDText:@"保存失败!"];
+                    }
+                }];
+//                [self doneCompleteWithModel:cameraModel];
             }
         }else {
             [self.view hx_immediatelyShowLoadingHudWithText:nil];
